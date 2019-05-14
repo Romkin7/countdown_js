@@ -4,6 +4,7 @@ const form = document.querySelector("form");
 const header = document.getElementById("head");
 let timer;
 let path = window.location.pathname.split("/");
+console.log(path);
 class Settings {
 	constructor(options) {
 		this.title = options.title,
@@ -14,6 +15,7 @@ class Settings {
 		return this.endTime.getTime() - Date.now()
 	}
 };
+
 function getIndexPage() {
 	if(path[path.indexOf("index.html")] === "index.html") {
 		return;
@@ -73,6 +75,8 @@ if(!window.localStorage.settings) {
 		header.innerHTML = parsedSettings.message;
 		setTimeout(function() {
 			window.localStorage.clear();
+			header.innerHTML = "Set settings options";
+			window.location = "settings.html";
 		}, 30000);
 	}
 }
