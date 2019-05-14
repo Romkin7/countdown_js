@@ -10,8 +10,8 @@ class Settings {
 		this.endTime = options.endTime,
 		this.message = options.message
 	}
-	getLeftTime() {
-		return this.endTime.getTime() - Date.now()
+	getLeftTime(endTime) {
+		return (endTime.getTime() - Date.now());
 	}
 };
 
@@ -42,16 +42,16 @@ if(!window.localStorage.settings) {
 		}
 	}
 } else {
-	const parsedSettings = JSON.parse(window.localStorage.getItem("settings"));
-	header.innerHTML = parsedSettings.title;
-	let endTime = new Date(parsedSettings.endTime);
-	let difference = endTime.getTime() - Date.now();
-	timer = setInterval(displayLeftTime, 1000, parsedSettings);
+	const settings = new Settings(JSON.parse(window.localStorage.getItem("settings")));
+	header.innerHTML = settings.title;
+	let endTime = new Date(settings.endTime);
+	let difference = settings.getLeftTime(endTime);
+	timer = setInterval(displayLeftTime, 1000, settings);
 	function displayLeftTime(settings) {
 		let endTime = new Date(settings.endTime);
 		if(difference <= 0) {
 			clearInterval(timer);
-			holidayMessage(parsedSettings);
+			holidayMessage(settings);
 		} else {
 			var seconds = Math.floor(difference / 1000);
     		var minutes = Math.floor(seconds / 60);
@@ -66,12 +66,12 @@ if(!window.localStorage.settings) {
     		document.getElementById("hours").innerHTML = hours;
     		document.getElementById("minutes").innerHTML = minutes;
     		document.getElementById("seconds").innerHTML = seconds;
-    		difference = endTime.getTime() - Date.now();
+    		difference = settings.getLeftTime(endTime);
 		}
 	}
-	function holidayMessage(parsedSettings) {
+	function holidayMessage(settings) {
 		window.location = "message.html";
-		header.innerHTML = parsedSettings.message;
+		header.innerHTML = settings.message;
 		setTimeout(function() {
 			window.localStorage.clear();
 			header.innerHTML = "Set settings options";
