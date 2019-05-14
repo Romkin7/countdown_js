@@ -15,7 +15,8 @@ First I set pathname of window.location object to variable path path is actually
 let path = window.location.pathname.split("/");
 this is what path variable looks like if you do it on my netlify host:
 
-["]
+["", "index.html"];
+so index.html is located there at index 1 but locally in file system it was at index 7.
 
 after splitting window.location.pathname and saving it into path variable as array.
 I check to see at what index filename is located in that array like so
