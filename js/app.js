@@ -1,6 +1,10 @@
 "use strict";
 /*variables */
 const form = document.querySelector("form");
+let formTitle = document.querySelector("#title");
+let formDate = document.querySelector("#date");
+let formTime = document.querySelector("#time");
+let formMessage = document.querySelector("#message");
 const header = document.getElementById("head");
 let timer;
 let path = window.location.pathname.split("/");
@@ -29,18 +33,23 @@ if(!window.localStorage.settings) {
 		if(form) {
 			form.addEventListener("submit", function(event) {
 				event.preventDefault();
-				let options = {};
-				options.title = document.querySelector("#title").value;
-				options.message = document.querySelector("#message").value;
-				let date = document.querySelector("#date").value.split("-").join("/");
-				let time = document.querySelector("#time").value.split(".").join(":")+":00";
-				options.endTime = new Date(date + " " + time);
-				let settings = new Settings(options);
-				window.localStorage.setItem("settings", JSON.stringify(settings));
-				getIndexPage();
+				submitForm();
 			});
 		}
 	}
+} else if(window.localStorage.settings && path[path.indexOf("settings.html")] === "settings.html") {
+	const settings = new Settings(JSON.parse(window.localStorage.getItem("settings")));
+	formTitle.value = settings.title;
+	formMessage.value = settings.message;
+	let hours =  new Date(settings.endTime).getHours() < 10 ? "0"+new Date(settings.endTime).getHours() : new Date(settings.endTime).getHours();
+	let minutes = new Date(settings.endTime).getMinutes() < 10 ? "0"+new Date(settings.endTime).getMinutes() : new Date(settings.endTime).getMinutes();
+	formTime.value = (hours + ":"+ minutes);
+	formDate.value = new Date(settings.endTime).toISOString().substring(0, 10);
+	form.addEventListener("submit", function(event) {
+		event.preventDefault();
+		window.localStorage.clear();
+		submitForm();
+	});
 } else {
 	const settings = new Settings(JSON.parse(window.localStorage.getItem("settings")));
 	header.innerHTML = settings.title;
@@ -78,4 +87,15 @@ if(!window.localStorage.settings) {
 			window.location = "settings.html";
 		}, 30000);
 	}
+}
+function submitForm() {
+	let options = {};
+	options.title = formTitle.value;
+	options.message = formMessage.value;
+	let date = formDate.value.split("-").join("/");
+	let time = formTime.value.split(".").join(":")+":00";
+	options.endTime = new Date(date + " " + time);
+	let settings = new Settings(options);
+	window.localStorage.setItem("settings", JSON.stringify(settings));
+	getIndexPage();
 }
