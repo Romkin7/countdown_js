@@ -3,6 +3,7 @@
 const form = document.querySelector("form");
 const header = document.getElementById("head");
 let timer;
+console.log(window.location.pathname);
 let path = window.location.pathname.split("/");
 console.log(path);
 class Settings {
